@@ -36,7 +36,7 @@ RUN apk add --no-cache openssl
 COPY package*.json ./
 
 # Install ONLY production dependencies to keep image small
-RUN npm ci --only=production
+RUN npm install --only=production
 
 COPY --from=builder /app/prisma ./prisma
 RUN npx prisma generate

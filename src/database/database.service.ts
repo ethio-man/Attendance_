@@ -2,6 +2,8 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
+import { Pool } from 'pg';
+
 @Injectable()
 export class DatabaseService extends PrismaClient implements OnModuleInit {
   constructor(private readonly config: ConfigService) {
@@ -9,13 +11,11 @@ export class DatabaseService extends PrismaClient implements OnModuleInit {
     if (!connectionString) {
       throw new Error('DATABASE_URL environment variable is required');
     }
-    const pool = new PrismaPg({ connectionString: connectionString });
-    if (!pool) {
-      throw new Error("Can't connect with the db");
-    }
-    super({ adapter: pool });
+    const pool = new Pool({ connectionString: connectionString });
+    const adapter = new PrismaPg(pool);
+    super({ adapter });
   }
-  private MAX_RETRIES = 5;
+  private MAX_RETRIES = 10;
   private RETRIES = 0;
   private RETRY_DELAY_MS = 2000;
   async onModuleInit() {
