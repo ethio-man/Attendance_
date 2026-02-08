@@ -11,7 +11,7 @@ import {
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { Prisma } from '../../../prisma/generated/client/client.js';
+import { Prisma } from '@prisma/client';
 
 export function mapPrismaErrorToHttp(error: unknown): Error {
   // Check if the error is already a known NestJS HTTP exception
@@ -127,22 +127,19 @@ export function mapPrismaErrorToHttp(error: unknown): Error {
 
       case 'P2011':
         return new BadRequestException(
-          `Null constraint violation${
-            target ? ` on field: "${target}"` : ''
+          `Null constraint violation${target ? ` on field: "${target}"` : ''
           }. This field cannot be null — please provide a valid value.`,
         );
 
       case 'P2012':
         return new BadRequestException(
-          `Missing required value${
-            target ? ` for field: "${target}"` : ''
+          `Missing required value${target ? ` for field: "${target}"` : ''
           }. Please provide all mandatory fields.`,
         );
 
       case 'P2013':
         return new BadRequestException(
-          `Missing required argument${
-            target ? `: "${target}"` : ''
+          `Missing required argument${target ? `: "${target}"` : ''
           }. Check your query or request body.`,
         );
 

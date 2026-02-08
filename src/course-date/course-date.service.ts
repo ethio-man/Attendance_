@@ -13,11 +13,11 @@ import {
   formatTimeInET,
 } from '../common/utils/date.utils.js';
 import { DateTime } from 'luxon';
-import { Prisma } from '../../prisma/generated/client/client.js';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CourseDateService {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly databaseService: DatabaseService) { }
 
   async create(createCourseDateDto: CreateCourseDateDto) {
     const { class_date, start_time, course_id, batch_id } = createCourseDateDto;
@@ -33,10 +33,10 @@ export class CourseDateService {
         class_date: ethiopianToUTC(class_date),
         start_time: start_time
           ? DateTime.fromFormat(start_time, 'HH:mm', {
-              zone: 'Africa/Addis_Ababa',
-            })
-              .toUTC()
-              .toJSDate()
+            zone: 'Africa/Addis_Ababa',
+          })
+            .toUTC()
+            .toJSDate()
           : null,
         course: { connect: { course_id: Number(course_id) } },
         batch: { connect: { batch_id: Number(batch_id) } },
@@ -105,10 +105,10 @@ export class CourseDateService {
       if (updateCourseDateDto.start_time !== undefined) {
         data.start_time = updateCourseDateDto.start_time
           ? DateTime.fromFormat(updateCourseDateDto.start_time, 'HH:mm', {
-              zone: 'Africa/Addis_Ababa',
-            })
-              .toUTC()
-              .toJSDate()
+            zone: 'Africa/Addis_Ababa',
+          })
+            .toUTC()
+            .toJSDate()
           : null;
       }
 
@@ -159,17 +159,17 @@ export class CourseDateService {
       start_time: formatTimeInET(courseDate.start_time),
       course: courseDate.course
         ? {
-            ...courseDate.course,
-          }
+          ...courseDate.course,
+        }
         : null,
       batch: courseDate.batch
         ? {
-            ...courseDate.batch,
-            start_date: utcToEthiopianFormatted(courseDate.batch.start_date),
-            end_date: courseDate.batch.end_date
-              ? utcToEthiopianFormatted(courseDate.batch.end_date)
-              : null,
-          }
+          ...courseDate.batch,
+          start_date: utcToEthiopianFormatted(courseDate.batch.start_date),
+          end_date: courseDate.batch.end_date
+            ? utcToEthiopianFormatted(courseDate.batch.end_date)
+            : null,
+        }
         : null,
     };
   }

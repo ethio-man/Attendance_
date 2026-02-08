@@ -12,11 +12,11 @@ import {
   utcToEthiopianFormatted,
   formatTimeInET,
 } from '../common/utils/date.utils.js';
-import { Prisma } from '../../prisma/generated/client/client.js';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class BatchesService {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly databaseService: DatabaseService) { }
 
   async create(createBatchDto: CreateBatchDto) {
     if (!createBatchDto.batch_name || !createBatchDto.start_date) {
