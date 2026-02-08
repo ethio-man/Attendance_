@@ -22,11 +22,13 @@ import { Redis } from '@upstash/redis';
           const redis = new Redis({ url, token });
           // Test connection
           await redis.ping();
-          console.log(' Connected to Upstash Redis successfully!');
+          console.log('Connected to Upstash Redis successfully!');
           return redis;
         } catch (err) {
-          console.error("Can't connect to Upstash Redis: " + err.message);
-          throw new Error("Can't connect to Upstash Redis!");
+          // Don't crash the app - just disable Redis
+          console.error('Failed to connect to Upstash Redis: ' + err.message);
+          console.warn('App will continue without Redis caching');
+          return null;
         }
       },
     },
