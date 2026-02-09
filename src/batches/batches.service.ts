@@ -168,11 +168,11 @@ export class BatchesService {
       end_date: batch.end_date ? utcToEthiopianFormatted(batch.end_date) : null,
     };
 
-    if (batch.course_dates) {
+    if (batch.course_dates && Array.isArray(batch.course_dates)) {
       formatted.course_dates = batch.course_dates.map((cd: any) => ({
         ...cd,
-        class_date: utcToEthiopianFormatted(cd.class_date),
-        start_time: formatTimeInET(cd.start_time),
+        class_date: cd.class_date ? utcToEthiopianFormatted(cd.class_date) : null,
+        start_time: cd.start_time ? formatTimeInET(cd.start_time) : null,
       }));
     }
 

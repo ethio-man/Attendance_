@@ -235,11 +235,12 @@ export class StudentsService {
       formatted.attendances = student.attendances.map((a: any) => ({
         ...a,
         recorded_at: utcToEthiopianFormatted(a.recorded_at),
-        course_date: {
-          ...a.course_date,
-          class_date: utcToEthiopianFormatted(a.course_date.class_date),
-          batch: a.course_date.batch
-            ? {
+        course_date: a.course_date
+          ? {
+            ...a.course_date,
+            class_date: utcToEthiopianFormatted(a.course_date.class_date),
+            batch: a.course_date.batch
+              ? {
                 ...a.course_date.batch,
                 start_date: utcToEthiopianFormatted(
                   a.course_date.batch.start_date,
@@ -248,8 +249,9 @@ export class StudentsService {
                   ? utcToEthiopianFormatted(a.course_date.batch.end_date)
                   : null,
               }
-            : null,
-        },
+              : null,
+          }
+          : null,
       }));
     }
 
