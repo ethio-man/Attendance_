@@ -19,4 +19,10 @@ async function bootstrap() {
   console.log(`Server running on port ${PORT}`);
 }
 
+
+// Handle BigInt serialization
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
+
 bootstrap();

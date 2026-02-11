@@ -59,13 +59,23 @@ export function ethiopianToUTC(etDateStr: string): Date {
 export function utcToEthiopianFormatted(utcDate: Date | null): string | null {
   if (!utcDate) return null;
 
-  const dt = DateTime.fromJSDate(utcDate, { zone: 'utc' }).setZone(ET_ZONE);
-  const et = toEthiopian(dt.year, dt.month, dt.day);
+  try {
+    const dt = DateTime.fromJSDate(utcDate, { zone: 'utc' }).setZone(ET_ZONE);
+    if (!dt.isValid) return null;
 
-  const monthName = ET_MONTH_NAMES[et.month];
-  if (!monthName) throw new Error(`Invalid Ethiopian month: ${et.month}`);
+    const et = toEthiopian(dt.year, dt.month, dt.day);
 
-  return `${monthName} ${et.day}, ${et.year} E.C.`;
+    const monthName = ET_MONTH_NAMES[et.month];
+    if (!monthName) {
+      console.error(`Invalid Ethiopian month: ${et.month} for date ${utcDate}`);
+      return null;
+    }
+
+    return `${monthName} ${et.day}, ${et.year} E.C.`;
+  } catch (err) {
+    console.error('Error formatting date:', err);
+    return null;
+  }
 }
 
 export function utcToEthiopianNumerical(utcDate: Date | null): string | null {
