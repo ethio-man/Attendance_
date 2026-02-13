@@ -20,9 +20,9 @@ import { Cacheable } from '../common/decorators/cache.decorator.js';
 
 @Controller('course')
 //@UseGuards(AuthGuard, RoleGuard)
-@Role(['super-admin'])
+//@Role(['super-admin'])
 export class CourseController {
-  constructor(private readonly courseService: CourseService) {}
+  constructor(private readonly courseService: CourseService) { }
 
   @Post()
   async create(@Body() createCourseDto: CreateCourseDto) {

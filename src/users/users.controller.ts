@@ -20,9 +20,9 @@ import { Role } from '../common/decorators/role.decorator.js';
 
 @Controller('user')
 //@UseGuards(AuthGuard, RoleGuard)
-@Role(['super-admin'])
+//@Role(['super-admin'])
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))

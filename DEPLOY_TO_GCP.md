@@ -49,6 +49,7 @@ This command builds your Dockerfile in the cloud and pushes it to the registry.
 # Submit the build (replace PROJECT_ID with your actual project ID)
 gcloud builds submit --tag us-central1-docker.pkg.dev/PROJECT_ID/docker-repo/gibi-backend .
 ```
+
 *(Make sure you are in the directory containing the `Dockerfile`)*
 
 ## Step 7: Deploy to Cloud Run
@@ -62,7 +63,6 @@ gcloud run deploy gibi-backend \
     --allow-unauthenticated \
     --set-env-vars DATABASE_URL="postgresql://user:pass@host:port/db?schema=public"
 ```
-
 *   Replace the `DATABASE_URL` value with your actual production database connection string.
 *   `--allow-unauthenticated` makes the API public. Remove this flag if you want it private.
 
