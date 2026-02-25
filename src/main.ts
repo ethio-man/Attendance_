@@ -8,7 +8,10 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    origin: ['http://localhost:5173'],
+    origin: [
+      'http://localhost:5173',
+      'https://frontend-seven-sable-29.vercel.app/',
+    ],
     credentials: true,
   });
 
@@ -18,7 +21,6 @@ async function bootstrap() {
 
   console.log(`Server running on port ${PORT}`);
 }
-
 
 // Handle BigInt serialization
 (BigInt.prototype as any).toJSON = function () {
