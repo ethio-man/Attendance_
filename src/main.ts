@@ -8,7 +8,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    origin: ['*'],
+    origin: 'https://frontend-seven-sable-29.vercel.app',
     credentials: true,
   });
 
