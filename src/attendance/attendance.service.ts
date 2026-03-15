@@ -24,27 +24,42 @@ export class AttendanceService {
     };
   }
 
+  // async create(createAttendanceDto: CreateAttendanceDto) {
+  //   try {
+  //     if (!createAttendanceDto.is_present || !createAttendanceDto.student_id) {
+  //       throw new BadRequestException(
+  //         'Required fields missing: is_present and student_id!',
+  //       );
+  //     }
+
+  //     const createdAttendance = await this.databaseService.attendance.create({
+  //       data: createAttendanceDto,
+  //     });
+
+  //     return {
+  //       attendance: this.serializeAttendance(createdAttendance),
+  //       message: 'Attendance created successfully!',
+  //     };
+  //   } catch (err) {
+  //     throw mapPrismaErrorToHttp(err);
+  //   }
+  // }
   async create(createAttendanceDto: CreateAttendanceDto) {
-    try {
-      if (!createAttendanceDto.is_present || !createAttendanceDto.student_id) {
-        throw new BadRequestException(
-          'Required fields missing: is_present and student_id!',
-        );
-      }
+    const { date_id, recorded_by_user_id, students } = createAttendanceDto;
+    const results = [];
 
-      const createdAttendance = await this.databaseService.attendance.create({
-        data: createAttendanceDto,
+    for (const student of students) {
+      const record = await this.attendanceRepository.create({
+        student_id: student.student_id,
+        is_present: student.is_present,
+        date_id,
+        recorded_by_user_id,
       });
-
-      return {
-        attendance: this.serializeAttendance(createdAttendance),
-        message: 'Attendance created successfully!',
-      };
-    } catch (err) {
-      throw mapPrismaErrorToHttp(err);
+      results.push(record);
     }
-  }
 
+    return results;
+  }
   async findAll() {
     try {
       const attendanceRecords = await this.databaseService.attendance.findMany({
