@@ -45,20 +45,31 @@ export class AttendanceService {
   //   }
   // }
   async create(createAttendanceDto: CreateAttendanceDto) {
-    const { date_id, recorded_by_user_id, students } = createAttendanceDto;
-    const results = [];
+    try {
+      const { date_id, recorded_by_user_id, students } = createAttendanceDto;
 
-    for (const student of students) {
-      const record = await this.attendanceRepository.create({
-        student_id: student.student_id,
-        is_present: student.is_present,
-        date_id,
-        recorded_by_user_id,
-      });
-      results.push(record);
+      const createdAttendance = await this.databaseService.$transaction(
+        students.map((student) =>
+          this.databaseService.attendance.create({
+            data: {
+              student_id: student.student_id,
+              is_present: student.is_present,
+              date_id,
+              recorded_by_user_id,
+            },
+          }),
+        ),
+      );
+
+      return {
+        attendance: createdAttendance.map((record) =>
+          this.serializeAttendance(record),
+        ),
+        message: 'Attendance created successfully!',
+      };
+    } catch (err) {
+      throw mapPrismaErrorToHttp(err);
     }
-
-    return results;
   }
   async findAll() {
     try {
