@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -13,6 +14,7 @@ import {
 import { StudentsService } from './students.service.js';
 import { CreateStudentDTO } from './dto/create.dto.js';
 import { UpdateStudentDto } from './dto/update.dto.js';
+import { PaginationQueryDto } from './dto/pagination.dto.js';
 import { AuthGuard } from '../common/guard/auth.guard.js';
 import { RoleGuard } from '../common/guard/role.guard.js';
 import { Cacheable } from '../common/decorators/cache.decorator.js';
@@ -22,8 +24,11 @@ export class StudentsController {
   constructor(private readonly getStudentsService: StudentsService) {}
   @Cacheable()
   @Get()
-  async getAll() {
-    return await this.getStudentsService.getAllStudents();
+  async getAll(@Query() paginationQuery: PaginationQueryDto) {
+    const page = paginationQuery.page || 1;
+    const limit = Math.min(paginationQuery.limit || 10, 10);
+    const skip = (page - 1) * limit;
+    return await this.getStudentsService.getAllStudents(skip, limit);
   }
   @Get(':student_id')
   async getOne(@Param('student_id') student_id: string) {

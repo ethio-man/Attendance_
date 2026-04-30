@@ -136,10 +136,13 @@ export class StudentsService {
       throw mapPrismaErrorToHttp(err);
     }
   }
-  async getAllStudents() {
+  async getAllStudents(skip: number = 0, take: number = 10) {
     try {
+      const total = await this.databaseService.student.count();
       const students = await this.databaseService.student.findMany({
         orderBy: { enrollment_date: 'desc' },
+        skip,
+        take,
         include: {
           attendances: {
             omit: {
@@ -156,7 +159,15 @@ export class StudentsService {
         },
       });
 
-      return students.map((s) => this.formatStudentForEthiopian(s));
+      return {
+        data: students.map((s) => this.formatStudentForEthiopian(s)),
+        pagination: {
+          total,
+          skip,
+          take,
+          hasMore: skip + take < total,
+        },
+      };
     } catch (err) {
       console.error('Error fetching students:', err);
       throw mapPrismaErrorToHttp(err);
@@ -237,20 +248,20 @@ export class StudentsService {
         recorded_at: utcToEthiopianFormatted(a.recorded_at),
         course_date: a.course_date
           ? {
-            ...a.course_date,
-            class_date: utcToEthiopianFormatted(a.course_date.class_date),
-            batch: a.course_date.batch
-              ? {
-                ...a.course_date.batch,
-                start_date: utcToEthiopianFormatted(
-                  a.course_date.batch.start_date,
-                ),
-                end_date: a.course_date.batch.end_date
-                  ? utcToEthiopianFormatted(a.course_date.batch.end_date)
-                  : null,
-              }
-              : null,
-          }
+              ...a.course_date,
+              class_date: utcToEthiopianFormatted(a.course_date.class_date),
+              batch: a.course_date.batch
+                ? {
+                    ...a.course_date.batch,
+                    start_date: utcToEthiopianFormatted(
+                      a.course_date.batch.start_date,
+                    ),
+                    end_date: a.course_date.batch.end_date
+                      ? utcToEthiopianFormatted(a.course_date.batch.end_date)
+                      : null,
+                  }
+                : null,
+            }
           : null,
       }));
     }
