@@ -8,7 +8,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    origin: 'http://localhost:5173', // 'https://6kilogibiattendace-seven-sable-29.vercel.app', //
+    origin: 'https://6kilogibiattendace-seven-sable-29.vercel.app', //http://localhost:5173
     credentials: true,
   });
 
